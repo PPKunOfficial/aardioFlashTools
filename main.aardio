@@ -1,0 +1,12 @@
+import win.ui;
+/*DSG{{*/
+mainForm = win.form(text="aardioFlashTools";right=959;bottom=591)
+mainForm.add()
+/*}}*/
+
+if(_ARGV.opt){
+	mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
+}
+
+mainForm.show();
+return win.loopMessage();
