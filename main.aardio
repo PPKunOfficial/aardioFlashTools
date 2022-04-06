@@ -1,8 +1,18 @@
 import win.ui;
 /*DSG{{*/
-mainForm = win.form(text="aardioFlashTools";right=959;bottom=591)
-mainForm.add()
+mainForm = win.form(text="aardioFlashTools";right=399;bottom=599)
+mainForm.add(
+button={cls="button";text="Button";left=16;top=101;right=378;bottom=145;z=3};
+static={cls="static";text="Coolapk@PPKun07";left=0;top=60;right=400;bottom=80;ah=1;align="center";aw=1;center=1;color=255;font=LOGFONT(h=-19;name='MiSans Heavy';weight=900);transparent=1;z=1};
+static1={cls="static";text="刷机有风险，三思而后行！";left=0;top=0;right=400;bottom=60;ah=1;align="center";aw=1;center=1;color=255;font=LOGFONT(h=-19;name='MiSans Heavy';weight=900);transparent=1;z=2}
+)
 /*}}*/
+
+mform_width=mainForm.bottom+1
+mform_height=mainForm.right+1
+
+
+
 
 if(_ARGV.opt){
 	mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
