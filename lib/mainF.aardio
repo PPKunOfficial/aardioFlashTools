@@ -1,19 +1,9 @@
 import win.ui;
-import mainF;
-/*UPDATE更新检测代码{{*/
-function checkUpdate(){
-	import update;
-	var nowVersion="200";
-	var updateJsonUrl="https://cdn.jsdelivr.net/gh/PPKunOfficial/aardioFlashTools@main/update.json";
-	var updateStatusCode = update.needUpdate(updateJsonUrl,nowVersion); 
-	if(updateStatusCode){
-		mainForm.static3.text="有更新版本"
-	}
-}
-checkUpdate()
-/*}}*/
-/*DSG{{*/
-	mainForm = win.form(text="aardioFlashTools";right=399;bottom=599)
+
+class mainF{
+	ctor(parent,tParam){
+	/*DSG{{*/
+	mainForm = ..win.form(text="aardioFlashTools";right=399;bottom=599)
 	mainForm.add(
 	button={cls="button";text="刷入Rec";left=45;top=150;right=350;bottom=190;ah=1;aw=1;font=LOGFONT(h=-16;name='MiSans');z=3};
 	button2={cls="button";text="Sideload刷机";left=45;top=210;right=350;bottom=250;ah=1;aw=1;font=LOGFONT(h=-16;name='MiSans');z=7};
@@ -25,13 +15,12 @@ checkUpdate()
 	static2={cls="static";text="FlashTools V2.0";left=0;top=0;right=400;bottom=45;ah=1;align="center";aw=1;center=1;font=LOGFONT(h=-29;name='MiSans';weight=700);transparent=1;z=6};
 	static3={cls="static";text="当前为最新版本";left=0;top=580;right=400;bottom=600;ah=1;align="center";aw=1;center=1;font=LOGFONT(h=-10;name='MiSans');transparent=1;z=9}
 	)
-/*}}*/
-/*自带代码{{*/
-if(_ARGV.opt){
-	mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
+	/*}}*/
+	
+	};
 }
-/*}}*/
 
-
-mainForm.show();
-return win.loopMessage();
+if( !owner ) mainF().doModal();
+/**intellisense()
+mainF() = 窗口类\n!winform.
+end intellisense**/
