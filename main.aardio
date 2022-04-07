@@ -1,5 +1,4 @@
 import win.ui;
-import mainF;
 /*UPDATE更新检测代码{{*/
 function checkUpdate(){
 	import update;
