@@ -1,4 +1,6 @@
 ﻿
 namespace update{
+	import inet.http
+	inet.http.get("")
 	
 }
