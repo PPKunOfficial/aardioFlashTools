@@ -1,8 +1,6 @@
 ﻿namespace update{
-	import fsys;
 	import io;
 	import inet.http
-	import win.ui
 	import web.json
 	var updateJsonUrl="https://cdn.jsdelivr.net/gh/PPKunOfficial/aardioFlashTools@main/update.json"
 	function getUpdate(url){
