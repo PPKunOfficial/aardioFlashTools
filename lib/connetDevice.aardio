@@ -2,14 +2,12 @@
 	fastbootConnet=function(){
 		import process.popen
 		import fsys
-		
-		var fastbootDIR = "/tools/fastboot.exe"; 
-		var nowDIR=fsys.getCurDir()
 		var commandV=/****
-		tools/fastboot.exe
+		cd tools
+		fastboot.exe devices
 		****/
 		var prcs = process.popen.cmd(commandV)
-		var result=prcs.read(-1)
+		var result=prcs.readAll()
 		return result
 	}	
 }

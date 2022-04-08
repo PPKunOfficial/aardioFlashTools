@@ -36,13 +36,23 @@ winform.button3.oncommand = function(id,event){
 winform.button2.oncommand = function(id,event){
 	import fsys.dlg;
 }
-
 winform.button.oncommand = function(id,event){
 	import connetDevice;
-	var fbConnet=connetDevice.fastbootConnet()
-	winform.richedit.text=connetDevice.fastbootConnet()
+	var findRt=connetDevice.fastbootConnet()
+	if(findRt!=""){
+		var formatS=string.split(findRt,`
+		`)
+		winform.richedit.text=""
+		for(i=1;table.count(formatS);2){
+			if(formatS[i]==null){
+			break
+			}
+			winform.richedit.text+=tostring(formatS[i])
+		}
+	}else {
+		winform.richedit.text="0"
+	}
 }
-
 winform.show();
 win.loopMessage();
 return winform;
