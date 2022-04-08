@@ -1,0 +1,12 @@
+﻿
+namespace connetDevice{
+	fastbootConnet=function(){
+		import process.popen
+		import fsys
+		var fastbootDIR = "/tools/fastboot.exe"; 
+		var nowDIR=fsys.getCurDir()
+		var commandV="cd "+nowDIR
+		var prcs=process.popen.cmd(commandV)
+		return prcs.read(-1)
+	}	
+}
