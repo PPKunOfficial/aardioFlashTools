@@ -1,4 +1,15 @@
+/*原子窗体{{*/
+import process.mutex;
+var mutex = process.mutex("0F45833B-0117-400E-A859-6634A062868D") 
+if( mutex.conflict ){
+    import win.ui.atom;
+    var atom,hwndConflict = win.ui.atom.find("D443D5F9-EC78-4276-9FEE-677B564DB9D22")
+    if( hwndConflict ) win.setForeground(hwndConflict);
+    return;
+} 
+/*}}*/
 import win.ui;
+import win.ui.atom 
 /*UPDATE更新检测代码{{*/
 function checkUpdate(){
 	import update;
@@ -28,13 +39,24 @@ static3={cls="static";text="当前为最新版本";left=0;top=580;right=400;bott
 
 /*自带代码{{*/
 if(_ARGV.opt){
-	mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
+	//mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
 }
 /*}}*/
-
+mainForm.atom("D443D5F9-EC78-4276-9FEE-677B564DB9D22"); 
 
 mainForm.button.oncommand = function(id,event){
-	mainForm.loadForm("/dlg/flash/rec.aardio")
+	win.loadForm("\dlg\flash.aardio")
+	publish("选择","rec")
+}
+
+mainForm.button2.oncommand = function(id,event){
+	win.loadForm("\dlg\flash.aardio")
+	publish("选择","sideload")
+}
+
+mainForm.button4.oncommand = function(id,event){
+	win.loadForm("\dlg\flash.aardio")
+	publish("选择","fb")
 }
 
 mainForm.show();
