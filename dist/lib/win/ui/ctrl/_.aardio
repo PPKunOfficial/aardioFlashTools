@@ -7,6 +7,7 @@ namespace win.ui.ctrl;
 
 //发布时将从下面排除未使用的控件库
 import win.ui.ctrl.edit
+import win.ui.ctrl.richedit
 import win.ui.ctrl.static
 
 namespace factory{

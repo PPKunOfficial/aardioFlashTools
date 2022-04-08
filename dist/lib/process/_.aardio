@@ -41,8 +41,7 @@ class process {
 			
    			var pfile = ..io.exist(pid);
    			if(pfile){ 
-	    		if(!sa.workDir) 
-	    			sa.workDir = ..io.splitpath(pfile).dir ; 
+	    		if(!sa.workDir) sa.workDir = ..io.splitpath(pfile).dir ; 
 	    			
 	    		var exe,shellpath = findExe(pfile); 
 	    		if(!exe){
@@ -64,6 +63,7 @@ class process {
 	    		error("路径参数错误",2);
 	    	} 
 	    	
+	    	if(!sa.workDir) sa.workDir = ..io.fullpath("/") ;
 			var pf = PROCESS_INFORMATION();
 			var ret;
 
