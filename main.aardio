@@ -36,27 +36,26 @@ static2={cls="static";text="FlashTools V2.0";left=0;top=0;right=400;bottom=45;ah
 static3={cls="static";text="当前为最新版本";left=0;top=580;right=400;bottom=600;ah=1;align="center";aw=1;center=1;font=LOGFONT(h=-10;name='MiSans');transparent=1;z=9}
 )
 /*}}*/
-
 /*自带代码{{*/
 if(_ARGV.opt){
 	//mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
 }
 /*}}*/
 mainForm.atom("D443D5F9-EC78-4276-9FEE-677B564DB9D22"); 
-
+clickButton="";
 mainForm.button.oncommand = function(id,event){
+	clickButton="rec";
 	win.loadForm("\dlg\flash.aardio")
-	publish("选择","rec")
 }
 
 mainForm.button2.oncommand = function(id,event){
+	clickButton="sideload";
 	win.loadForm("\dlg\flash.aardio")
-	publish("选择","sideload")
 }
 
 mainForm.button4.oncommand = function(id,event){
+	clickButton="fb";
 	win.loadForm("\dlg\flash.aardio")
-	publish("选择","fb")
 }
 
 mainForm.show();
