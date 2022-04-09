@@ -9,6 +9,7 @@ namespace win.ui.ctrl;
 import win.ui.ctrl.edit
 import win.ui.ctrl.richedit
 import win.ui.ctrl.static
+import win.ui.ctrl.combobox
 
 namespace factory{
 

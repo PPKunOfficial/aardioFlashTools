@@ -1,18 +1,39 @@
 import win.ui;
+import win.ui.menu;
 /*DSG{{*/
 var winform = win.form(text="Flash";right=599;bottom=399)
 winform.add(
-button={cls="button";text="扫描设备";left=10;top=178;right=180;bottom=238;ah=1;aw=1;font=LOGFONT(h=-20;name='MiSans';weight=700);z=8};
-button2={cls="button";text="刷入";left=10;top=330;right=180;bottom=390;ah=1;aw=1;font=LOGFONT(h=-19;name='MiSans';weight=700);z=2};
-button3={cls="button";text="选择镜像文件";left=10;top=253;right=180;bottom=313;ah=1;aw=1;font=LOGFONT(h=-20;name='MiSans';weight=700);z=3};
-edit={cls="edit";text="选择文件...";left=10;top=55;right=180;bottom=113;ah=1;aw=1;edge=1;font=LOGFONT(name='MiSans');multiline=1;z=4};
-edit2={cls="edit";text="刷入的分区";left=10;top=126;right=180;bottom=159;ah=1;aw=1;edge=1;font=LOGFONT(name='MiSans');hide=1;multiline=1;z=6};
+button={cls="button";text="扫描设备";left=8;top=256;right=184;bottom=296;ah=1;aw=1;font=LOGFONT(h=-20;name='MiSans';weight=700);z=8};
+button2={cls="button";text="刷入";left=8;top=352;right=184;bottom=390;ah=1;aw=1;font=LOGFONT(h=-19;name='MiSans';weight=700);z=2};
+button3={cls="button";text="选择镜像文件";left=8;top=304;right=184;bottom=344;ah=1;aw=1;font=LOGFONT(h=-20;name='MiSans';weight=700);z=3};
+combobox={cls="combobox";left=8;top=184;right=184;bottom=208;edge=1;items={};mode="dropdown";z=9};
+edit={cls="edit";text="选择文件...";left=8;top=55;right=184;bottom=136;ah=1;aw=1;edge=1;font=LOGFONT(name='MiSans');multiline=1;z=4};
+edit2={cls="edit";text="刷入的分区";left=8;top=144;right=184;bottom=177;ah=1;aw=1;edge=1;font=LOGFONT(name='MiSans');hide=1;multiline=1;z=6};
 richedit={cls="richedit";text="等待命令...";left=200;top=55;right=590;bottom=390;ah=1;aw=1;edge=1;font=LOGFONT(name='MiSans');hscroll=1;multiline=1;readonly=1;vscroll=1;z=1};
 static={cls="static";text="刷入状态：";left=200;top=25;right=340;bottom=48;font=LOGFONT(h=-16;name='MiSans';weight=700);transparent=1;z=5};
-static2={cls="static";text="刷入模式：";left=10;top=25;right=197;bottom=48;font=LOGFONT(h=-16;name='MiSans';weight=700);transparent=1;z=7}
+static2={cls="static";text="刷入模式：";left=8;top=25;right=184;bottom=48;font=LOGFONT(h=-16;name='MiSans';weight=700);transparent=1;z=7}
 )
 /*}}*/
 
+/*链接核心代码{{*/
+fastbootConnet=function(){
+	import process.popen
+	import fsys
+	var commandV=/****
+	cd tools
+	fastboot.exe devices
+	****/
+	var prcs = process.popen.cmd(commandV)
+	var result=prcs.readAll()
+	return result
+}	
+formatDeviceMsg=function(result){
+	var res=tostring(result)
+	var formatResult=string.split(res,"<fastboot>")
+	return formatResult
+}
+/*}}*/
+/*获取刷入模式{{*/
 cos=tostring(clickButton)
 if(cos=="rec"){
 	winform.static2.text+="刷入rec";
@@ -21,13 +42,12 @@ if(cos=="rec"){
 }else{
 	winform.static2.text+="rec线刷模式"
 }
-
-
 if(cos=="fb" or cos=="sideload"){
 		winform.edit2.hide=0;
 }else{
 	winform.edit.bottom=159
 }
+/*}}*/
 winform.button3.oncommand = function(id,event){
 	import fsys.dlg;
 	var filedir = fsys.dlg.open("镜像文件 *.img|*.img|");
@@ -37,22 +57,32 @@ winform.button2.oncommand = function(id,event){
 	import fsys.dlg;
 }
 winform.button.oncommand = function(id,event){
-	import connetDevice;
-	var findRt=connetDevice.fastbootConnet()
-	if(findRt!=""){
-		var formatS=string.split(findRt,`
-		`)
-		winform.richedit.text=""
-		for(i=1;table.count(formatS);2){
-			if(formatS[i]==null){
-			break
-			}
-			winform.richedit.text+=tostring(formatS[i])
+	var findRt=fastbootConnet()
+	var formatResult=formatDeviceMsg(findRt)
+	if(!table.count(formatResult)){
+		winform.richedit.text="无设备链接..."
+	}else{
+		winform.richedit.text='当前发现设备:\r\n'
+		if(table.count(formatResult)==1){
+			winform.combobox.add(tostring(formatResult[1]))
+			winform.combobox.selText=tostring(formatResult[1])	
+			winform.richedit.text+=formatResult[1]
+		}else {
+			for(i=1;table.count(formatResult)-1;1){
+				winform.combobox.add(tostring(formatResult[i]))
+				winform.combobox.selText=tostring(formatResult[i])
+				winform.richedit.text+=formatResult[i]
+			}		
 		}
-	}else {
-		winform.richedit.text="0"
 	}
 }
+
+winform.combobox.oncommand = function(id,event){
+	if(event == 0x1/*_CBN_SELCHANGE*/){
+		winform.richedit.text = winform.combobox.selText;
+	}
+}
+winform.button.oncommand()
 winform.show();
 win.loopMessage();
 return winform;
