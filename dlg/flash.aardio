@@ -60,29 +60,30 @@ winform.button.oncommand = function(id,event){
 	var findRt=fastbootConnet()
 	var formatResult=formatDeviceMsg(findRt)
 	if(!table.count(formatResult)){
-		winform.richedit.text="无设备链接..."
+		winform.richedit.text='无设备链接...\n';
 	}else{
-		winform.richedit.text='当前发现设备:\r\n'
+		winform.richedit.text='当前发现设备:\n';
 		if(table.count(formatResult)==1){
-			winform.combobox.add(tostring(formatResult[1]))
-			winform.combobox.selText=tostring(formatResult[1])	
-			winform.richedit.text+=formatResult[1]
+			winform.combobox.add(tostring(formatResult[1]));
+			winform.combobox.selText=tostring(formatResult[1])	;
+			winform.richedit.text+=formatResult[1];
 		}else {
 			for(i=1;table.count(formatResult)-1;1){
-				winform.combobox.add(tostring(formatResult[i]))
-				winform.combobox.selText=tostring(formatResult[i])
-				winform.richedit.text+=formatResult[i]
+				winform.combobox.add(tostring(formatResult[i]));
+				winform.combobox.selText=tostring(formatResult[i]);
+				winform.richedit.text+=formatResult[i];
 			}		
 		}
 	}
+	winform.richedit.text+='\n';
 }
 
 winform.combobox.oncommand = function(id,event){
 	if(event == 0x1/*_CBN_SELCHANGE*/){
-		winform.richedit.text = winform.combobox.selText;
+		winform.richedit.text += '已选中:\n'+winform.combobox.selText+'\n';
 	}
 }
-winform.button.oncommand()
+winform.button.oncommand();
 winform.show();
 win.loopMessage();
 return winform;
