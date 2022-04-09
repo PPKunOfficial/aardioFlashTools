@@ -29,8 +29,49 @@ fastbootConnet=function(){
 }	
 formatDeviceMsg=function(result){
 	var res=tostring(result)
-	var formatResult=string.split(res,"<fastboot>")
+	var formatResult=""
+	if(cos=="fb" and fb=="rec"){
+		formatResult=string.split(res,"<fastboot>")
+	}else {
+		formatResult=string.split(res,"<recovery>")
+	}
 	return formatResult
+}
+adbFormatMsg2Fb=function(result){
+	var res=tostring(result)
+	if(res=="List of devices attached"){
+		return ""; 
+	}
+	var formatLine=string.split(res,'\n')
+	var removeFirstLine=""
+	for(i=2;table.count(formatLine);1){
+		if(table.count(formatLine)==2){
+			removeFirstLine+=formatLine[2]
+			break
+		}
+		removeFirstLine+=formatLine[i]+'\n'	
+	}
+	return removeFirstLine
+}	
+adbConnet=function(){
+	import process.popen
+	import fsys
+	var commandV=/****
+	cd tools
+	adb.exe devices
+	****/
+	var prcs = process.popen.cmd(commandV)
+	var result=prcs.readAll()
+	return adbFormatMsg2Fb(result)
+}	
+startADB=function(){
+	import process.popen
+	import fsys
+	var commandV=/****
+	cd tools
+	adb.exe devices
+	****/
+	var prcs = process.popen.cmd(commandV)
 }
 /*}}*/
 /*获取刷入模式{{*/
@@ -57,7 +98,14 @@ winform.button2.oncommand = function(id,event){
 	import fsys.dlg;
 }
 winform.button.oncommand = function(id,event){
-	var findRt=fastbootConnet()
+	var findRt=""
+	if(cos=="fb" or cos=="rec"){
+		findRt=fastbootConnet()
+	}else{
+		startADB()
+		findRt=adbConnet()
+	}
+	winform.combobox.clear()
 	var formatResult=formatDeviceMsg(findRt)
 	if(!table.count(formatResult)){
 		winform.richedit.text='无设备链接...\n';
