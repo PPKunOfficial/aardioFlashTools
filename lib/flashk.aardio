@@ -1,5 +1,4 @@
-﻿namespace flash{
-	cfile=""
+﻿namespace flashk{
 	/*链接核心代码{{*/
 	fastbootConnet=function(){
 		import process.popen
@@ -12,7 +11,7 @@
 		var result=prcs.readAll()
 		return result
 	}	
-	formatDeviceMsg=function(result){
+	formatDeviceMsg=function(cos,result){
 		var res=tostring(result)
 		var formatResult=""
 		if(cos=="fb" and fb=="rec"){

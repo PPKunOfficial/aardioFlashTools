@@ -16,66 +16,8 @@ static2={cls="static";text="刷入模式：";left=8;top=25;right=184;bottom=48;f
 /*}}*/
 
 cfile=""
-/*链接核心代码{{*/
-fastbootConnet=function(){
-	import process.popen
-	import fsys
-	var commandV=/****
-	cd tools
-	fastboot.exe devices
-	****/
-	var prcs = process.popen.cmd(commandV)
-	var result=prcs.readAll()
-	return result
-}	
-formatDeviceMsg=function(result){
-	var res=tostring(result)
-	var formatResult=""
-	if(cos=="fb" and fb=="rec"){
-		formatResult=string.split(res,"<fastboot>")
-	}else {
-		formatResult=string.split(res,"<sideload>")
-	}
-	return formatResult
-}
-adbFormatMsg2Fb=function(result){
-	var res=tostring(result)
-	if(res=="List of devices attached"){
-		return ""; 
-	}
-	var formatLine=string.split(res,'\n')
-	var removeFirstLine=""
-	for(i=2;table.count(formatLine);1){
-		if(table.count(formatLine)==2){
-			removeFirstLine+=formatLine[2]
-			break
-		}
-		removeFirstLine+=formatLine[i]+'\n'	
-	}
-	return removeFirstLine
-}	
-adbConnet=function(){
-	import process.popen
-	import fsys
-	var commandV=/****
-	cd tools
-	adb.exe devices
-	****/
-	var prcs = process.popen.cmd(commandV)
-	var result=prcs.readAll()
-	return adbFormatMsg2Fb(result)
-}	
-startADB=function(){
-	import process.popen
-	import fsys
-	var commandV=/****
-	cd tools
-	adb.exe devices
-	****/
-	var prcs = process.popen.cmd(commandV)
-}
-/*}}*/
 /*获取刷入模式{{*/
+//本段代码没有纳入kernel的必要
 cos=tostring(clickButton)
 if(cos=="rec"){
 	winform.static2.text+="刷入rec";
@@ -91,31 +33,19 @@ if(cos=="fb" or cos=="sideload"){
 }
 /*}}*/
 /*扫描设备代码{{*/
+import flashk
+
 winform.button.oncommand = function(id,event){
-	var findRt=""
-	if(cos=="fb" or cos=="rec"){
-		findRt=fastbootConnet()
-	}else{
-		startADB()
-		findRt=adbConnet()
-	}
-	winform.combobox.clear()
-	var formatResult=formatDeviceMsg(findRt)
-	if(!table.count(formatResult)){
+	var formatResult=flashk.findDevice(cos)
+	if(formatResult=="404"){
 		winform.richedit.text='无设备链接...\n';
 	}else{
 		winform.richedit.text='当前发现设备:\n';
-		if(table.count(formatResult)==1){
-			winform.combobox.add(tostring(formatResult[1]));
-			winform.combobox.selText=tostring(formatResult[1])	;
-			winform.richedit.text+=formatResult[1];
-		}else {
-			for(i=1;table.count(formatResult)-1;1){
-				winform.combobox.add(tostring(formatResult[i]));
-				winform.combobox.selText=tostring(formatResult[i]);
-				winform.richedit.text+=formatResult[i];
-			}		
-		}
+		for(i=1;table.count(formatResult);1){
+			winform.combobox.add(tostring(formatResult[i]));
+			winform.combobox.selText=tostring(formatResult[i]);
+			winform.richedit.text+=formatResult[i];
+		}		
 	}
 	winform.richedit.text+='\n';
 }
