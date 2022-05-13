@@ -256,7 +256,7 @@ class popen{
 				elseif( this.logger.write )  echo = function(all) this.logger.write(all);   
 			}
 			else {
-				if( ..console ) ..console.open();
+				if( ..console && ! ..console.getWindow() ) ..console.open();
 				echo = function(all,out,err){
 					if(out) ..io.stdout.write( out );
 					if(err) ..io.stderr.write( err );
@@ -446,7 +446,7 @@ process.popen.detached() = !process_popen.
 !process_popen.beforeClose = @.beforeClose = function(){
 	owner.process.terminate();__/*释放管道以前触发此事件,可强制关闭进程*/
 }
-!process_popen.logger = 指定 logResponse 的默认回显对象\n该对象必须有log或write成员函数用于输出回显\nlogger 对象用于logResponse 时将同步获取输出并等待进程结束
+!process_popen.logger = 指定 logResponse 的默认回显对象\n该对象必须有log或write成员函数用于输出回显\nlogger 对象用于logResponse 时将同步获取输出并等待进程结束\n\n如果不指定此属性,且已导入 console 则默认输出到控制台
 !process_popen.logResponse( = 回显进程的标准输出以及错误输出
 !process_popen.logResponse(.(回显函数,间隔时间) = 自动同动获取进程输出,并直到进程结束,所有参数可省略,\n如果之前定义了logger成员对象，则调用logger输出进程回显\n未指定logger对象则默认回显到控制台
 !process_popen.logResponse(.(异步回显文本框,间隔时间) = 不会阻塞并等待进程结束,\n而是在传入文本框控件上创建定时器异步回显进程输出,\n回显文本框必须指定edit或richedit控件,间隔时间可省略

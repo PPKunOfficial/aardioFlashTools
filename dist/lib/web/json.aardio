@@ -190,8 +190,8 @@ var consts = {
 var scanConstant = function(str,pos,isKey,rootNode){ 
 	if(str[pos]==','#)
 		return null,pos;
-	  	
-	var n,l = tonumber( str,,pos );
+	  
+	var n,l = tonumber(str,,pos,'.'#);
     if(n!==null){
         if(l>=#str || match(str,"^[\s\,\;\}\]]",pos+l) ){
         	if( (l>14) && (n>99999999999999) && (..math.floor(n) === n) ) {
@@ -238,8 +238,8 @@ var encode = function(v,prettyPrint,unicodeEscaped,objreferences){
     		v = ..string.escape(v,true,unicodeEscaped);
     	    return v ?  ('"'+ v + '"') : "null";
     	}
-    	case "number"{ 
-    		return  tostring(v);
+    	case "number"{
+    		return  tostring(v,,'.'#);
     	}
     	case "table" {
     		if( ( v[["year"]]!==null)  &&  ..time.istime(v) ) return tostring(v.utc(true),`"%Y-%m-%dT%H:%M:%SZ"`);
@@ -252,10 +252,10 @@ var encode = function(v,prettyPrint,unicodeEscaped,objreferences){
         	return ret;
     	}
     	case "boolean"{ 
-    		return  tostring(v);
+    		return v?"true":"false";
     	}
     	case "null"{ 
-    		return  tostring(v);
+    		return "null";
     	} 
     	case "buffer"{ 
     		var data ={};

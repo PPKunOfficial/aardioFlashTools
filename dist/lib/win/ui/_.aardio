@@ -3,8 +3,6 @@ import win.ui.background;
 
 namespace win.ui{
     
-	NMHDR = ::NMHDR;
-	
 	waitCursor = function(wait,hCur){
 		if( wait ){
 			if(hCur===null) hCur = ::User32.LoadCursor(null,0x7F02/*_IDC_WAIT*/);
@@ -22,6 +20,8 @@ namespace win.ui{
 			..win._form._defaultProc[0x20/*_WM_SETCURSOR*/] = null;
 		} 
 	}
+	
+	self.NMHDR = ::NMHDR; //@Deprecated
 }
 
 class win.form {  
@@ -448,26 +448,27 @@ namespace win.form{
  	   	     	) );
  	   		}
  	   }; 
- 	   [0x18/*_WM_SHOWWINDOW*/] = function(this,hwnd, message, wParam, lParam){ 
-			if( hwnd == this.hwnd){
-				if( this.beforeShowWindow )  this.beforeShowWindow( !!wParam,lParam);
-            	if( this._beforeShowWindowInCustom )  this._beforeShowWindowInCustom(!!wParam,lParam);
-            	
-            	for(hwnd,ctrl in this._ctrlAutoResize ){  
+ 	   [0x47/*_WM_WINDOWPOSCHANGED*/] = function(this,hwnd, message, wParam, lParam){
+ 	  		var pos = ..raw.convert(topointer(lParam), {
+  				addr hwnd;
+  				addr hwndInsertAfter;
+  				int  x;
+  				int  y;
+  				int  cx;
+  				int  cy;
+  				INT flags;
+			}) 	
+			
+			var flags = pos.flags;
+			if(flags & 0x40/*_SWP_SHOWWINDOW*/){
+				if( !this["(dpiScalingInitialized)"] )this.enableDpiScaling("init");
+				
+				for(hwnd,ctrl in this._ctrlAutoResize ){  
 					if( ctrl.cacheOrphanWindowRect__ ){ 
-						if(!wParam){
-							if( ..win.isVisible(ctrl.hwnd) ){
-								ctrl.show(false);
-								ctrl.orphanRestorePending = true;
-								if( ctrl.onSetOrphanWindowPos ) ctrl.onSetOrphanWindowPos(,,,,0x80/*_SWP_HIDEWINDOW*/)
-							}
-							continue;
-						} 
-					
 						var rc = ctrl.cacheOrphanWindowRect__; 
 						var l,t = ..win.toScreen(this.hwnd,rc.left,rc.top); 
 						var swp =  0x1C/*_SWP_NOACTIVATE | _SWP_NOZORDER | _SWP_NOREDRAW*/;
-						if( ctrl.orphanRestorePending ) {
+						if( ctrl.orphanRestorePending) {
 							swp = 0x40/*_SWP_SHOWWINDOW*/ | swp;
 							ctrl.orphanRestorePending = null; 
 						}
@@ -477,6 +478,26 @@ namespace win.form{
 						ctrl.redraw();
 					}
 				}
+			}
+			elseif(flags & 0x80/*_SWP_HIDEWINDOW*/){
+				for(hwnd,ctrl in this._ctrlAutoResize ){  
+					if( ctrl.cacheOrphanWindowRect__ ){  
+						if( ..win.isVisible(ctrl.hwnd) ){
+							ctrl.show(false);
+							ctrl.orphanRestorePending = true;
+							if( ctrl.onSetOrphanWindowPos ) ctrl.onSetOrphanWindowPos(,,,,0x80/*_SWP_HIDEWINDOW*/)
+						} 
+					}
+				}
+			}
+			
+			if(this._onPosChangedWithShadow) return this._onPosChangedWithShadow(flags,pos.hwndInsertAfter,pos.x,pos.y,pos.cx,pos.cy);
+			if(this.onPosChanged) return this.onPosChanged(flags,pos.hwndInsertAfter,pos.x,pos.y,pos.cx,pos.cy);
+ 	   };
+ 	   [0x18/*_WM_SHOWWINDOW*/] = function(this,hwnd, message, wParam, lParam){ 
+			if( hwnd == this.hwnd){
+				if( this.beforeShowWindow )  this.beforeShowWindow( !!wParam,lParam);
+				if( this._beforeShowWindowInCustom )  this._beforeShowWindowInCustom( !!wParam,lParam);
 			}
 	   };
  	   [0x3/*_WM_MOVE*/] = function(this,hwnd, message, wParam, lParam){ 
@@ -679,7 +700,8 @@ namespace win.form{
 
    				if( this.toolbar ? this.toolbar.adjust){ 
    					this.toolbar.adjust();
-   				}	
+   				}
+   					
    				if( this.statusbar ? this.statusbar.adjust){ 
    					this.statusbar.adjust();
    				}
@@ -687,9 +709,14 @@ namespace win.form{
    				if( this._adjust ){  
    					this._adjust( dlg.right-dlg.left,dlg.bottom-dlg.top,wParam);
    				} 
+   				
    				if( this.adjust__ ){  
    					this.adjust__( dlg.right-dlg.left,dlg.bottom-dlg.top,wParam);
    				} 
+   				
+   				if(this._adjustWithShadow){
+   					this._adjustWithShadow( dlg.right-dlg.left,dlg.bottom-dlg.top,wParam);
+   				}
    			}
  	   }; 
  	   [0x112/*_WM_SYSCOMMAND*/] = function(this,hwnd, message, wParam, lParam){ 
@@ -1117,9 +1144,7 @@ namespace win.form{
 				return owner.update();
 			};
 			show = function(flag) {    
-				if( !owner["(dpiScalingInitialized)"] ){
-					owner.enableDpiScaling("init");
-				}
+				if( !owner["(dpiScalingInitialized)"] )owner.enableDpiScaling("init");
 				
 				..win.show(owner[["hwnd"]],flag);
 				if( owner[["(__continueModal)"]]  ){
@@ -1135,7 +1160,7 @@ namespace win.form{
  	   				if(minMaxInfo) ..win.setPos(owner[["hwnd"]],,,minMaxInfo.maxSize.x,minMaxInfo.maxSize.y);  
  	   			}
 			};
-			doModal = function(hwndOwner){ 
+			doModal = function(hwndOwner,swFlags){ 
 			
 				if(!hwndOwner){
 					hwndOwner = ..win.getOwner( owner.hwnd) 
@@ -1150,7 +1175,7 @@ namespace win.form{
 				owner.modifyStyle(0,0x80/*_DS_MODALFRAME*/)
 				owner[["(__continueModal)"]] = true; 
 				::SendMessageInt(owner[["hwnd"]],0x110/*_WM_INITDIALOG*/,0,0);
-				owner.show(); 
+				owner.show(swFlags); 
 				
 				if(!owner.onCancel) owner.onCancel = function(){ owner.endModal(); }
 				if(!owner.onOk) owner.onOk = function(){ 

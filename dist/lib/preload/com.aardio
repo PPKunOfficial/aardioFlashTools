@@ -62,11 +62,6 @@ namespace com {
 		return TryGetObject(...) || TryCreateObject(...)
 	};
 	
-	isEnumerator = function(v){
-		var t,t2 = type(v);
-		return t=="table" && t2=="com._ENUMERATOR_COM_TYPE" && v.Next;
-	};
-	
 	eachRunning = function(name){
     	var r = {}
 		enumRunning( 
@@ -94,28 +89,25 @@ namespace com {
 	each = function(obj) {
 		if (type(obj) == type.function) obj = obj();
 		
-		var enumerator;
+		var enum;
 		if (!IsObject(obj)) {
-			if( isEnumerator(obj) ){
-				enumerator = obj;
-			}
-			else {
-				error('{Expected}:com object\n{Got}:null', 2);
-			}  
+			if( isEnumerator(obj) ) enum = obj; 
+			else error('\n{Bad argument}:@1\n{Expected}:COM object\n{Got}:'+type(obj), 2); 
 		}
 		else {
-			enumerator = GetEnumerator(obj);
+			enum = GetEnumerator(obj);
 		}
- 	
+
 		var index = 0;
 		return function() {
-			var value = enumerator.Next();
+			var value = enum.Next();
 			if (value) {
 				index = index + 1;
 				return index,value;
 			}
 		},function(){
-			..com.Release(enumerator._TCOMENUMERATOR__internal/*不要在其他地方调用此字段*/);
+			Release(enum);
+			enum = null;
 		} 
 	};
 	 
@@ -123,7 +115,7 @@ namespace com {
 		var enum = obj ? GetEnumerator(obj);
 		if(enum){
 			var value = enum.Next();
-			..com.Release(enum._TCOMENUMERATOR__internal/*不要在其他地方调用此字段*/); 
+			Release(enum); 
 			return value;
 		}  
 	};
@@ -178,13 +170,15 @@ GetPointer(.(com对象) = 获取IDispatch指针\n该指针返回前已调用AddR
 GetPointer(.(com对象或指针,GUID) = 使用GUID指定接口获取原生指针,\n该指针返回前已调用AddRef增加COM引用计数,\n不再使用时必须及时调用com.Release释放,\n参数@1可是com对象、com.IUnknown对象、或可转换为指针的对象\n参数@2可用文本格式表示,省略时默认为IID_IUnknown
 GetIUnknown(.(com对象或指针,GUID) = 使用GUID指定接口获取com.IUnknown托管指针\n参数@1可是任何可以转换为指针的对象,与API参数规则相同,\n可选在参数@2使用字符串或GUID指定接口\n该指针自动管理引用计数，无须手动释放
 IsIUnknown(.(任意参数)  = 检测参数是否一个托管com.IUnknown指针
+isEnumerator(__/*对象*/) = 检查并返回参数指定的对象是否 COM 迭代器
 ConnectWeak( = 注册弱引用自身的事件接收表\n此函数返回sink,cookie 共2个返回值，\nsink为事件接收器,cookie是一个数字值,用来记录连接点，\n这2个返回值可以用于 com.ReleaseConnection 释放事件表
 ConnectWeak(.(COM对象,事件接收表) = 参数@2指定一个table类型的表对象\n该表对象被创建为COM对象的默认事件接口并注册为事件接收器。\n\n在COM对象销毁前，com.Connect绑定的事件接收表会被强引用并被阻止回收，\n如果COM对象与事件接收表存在循环引用自身会导致COM对象无法释放,\ncom.ConnectWeak函数通过创建一个中间代理对象弱引用事件接收表，可以避免该问题，\n但要注意回调事件访问的owner对象是代理对象,使用owner.realSink可以获取真正的事件表
 Connect( = 注册事件接收表\n此函数返回sink,cookie 共2个返回值，\nsink为事件接收器,cookie是一个数字值,用来记录连接点，\n这2个返回值可以用于 com.ReleaseConnection 释放事件表。
 Connect(.(COM对象,事件监听表) = 参数@2指定一个 table 类型的表对象\n该表对象被转换为COM对象的默认事件监听器并实现默认事件接口,\n如果需要显式指定接口类型请使用 com.AddConnection。\n\ncom.Connect 绑定的事件监听表会被强引用到 COM 对象\n如果COM对象与事件接收表存在循环引用自身会导致无法释放,\n可用 com.ReleaseConnection 手动释放事件绑定,\n或者改用 com.ConnectWeak,com.CreateEmbedEx 也可以避免该问题
 AddConnection( = 绑定事件监听对象
 AddConnection(.(COM对象,事件监听对象) = 事件监听对象用 com.ImplInterface 创建\n返回一个表示事件连接点的 cookie,\n可用于释放绑定的 com.ReleaseConnection 函数
-GetEnumerator(__) = 获取枚举对象
+GetEnumerator(__) = 获取枚举对象,\n参数 @1 指定 COM 对象
+GetEnumerator() = !comEnumerator.
 ShowHelp(__/*com对象*/) = 显示帮助
 RoundTrip() = 将aardio对象转换为COM对象，\n再将该COM对象转换为aardio对象
 ImplInterface(.(implObject) = 将 aardio 对象转换为支持 IDispatch 接口的 COM 对象，\n参数@1可以是普通表对象、函数对象、类对象、cdata对象。\n\n如果参数@1是函数或类对象,回调时onwer参数为 dispIdMember 数值。\n如果参数@1是表对象转换为 COM 对象，直接作为 COM 函数调用时支持 _call元方法，\n如果未定义 _call元方法则调用表对象中索引为0的函数\n通过 COM 接口调用表的成员函数时支持 _get 元方法，并将 onwerCall 参数设为 true。\n\n表对象或表的成员函数作为COM函数回调时 onwer 参数总是指向表对象自身,\ndispIdMember小于0时总是调用表索引中对应的函数,\n\n在与 COM 接口交互时，\n无法自动转换为 COM对象的 aardio 对象也会调用此函数自动转换
@@ -292,7 +286,6 @@ GetTypeInfoCount() = 类型信息总数
 ExportConstants() = 导出常量
 ExportEnumerations() =  导出全部迭代器
 GetDocumentation() = 返回文档信息\n!comTypeDoc.
-isEnumerator(__/*对象*/) = 检查并返回参数指定的对象是否COM迭代器。
 end intellisense**/
 
 /**intellisense(!comTypeAttr)
@@ -317,4 +310,11 @@ parray = 只读属性,获取SAFEARRAY指针
 pdispVal = 只读属性,获取IDispatch指针
 punkVal = 只读属性,获取IUnknown指针 
 value = 读写值遵守com与aardio间的数据类型转换规则 
+end intellisense**/
+
+/**intellisense(!comEnumerator)
+Next(.(n) = 向后获取并返回 n 个元素的值
+Reset() = 重置到开始位置
+Skip(.(n) = 跳过 n 个元素的值,成功返回 true
+Clone() = 复制对象\n!comEnumerator.
 end intellisense**/

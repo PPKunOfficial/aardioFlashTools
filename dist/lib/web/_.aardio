@@ -24,10 +24,12 @@ joinHeaders = function(h,...){
 						push( lst,k,v,'\r\n' )	
 					}
 				}
-			}
-			h = lst; 
+			} 
+			h = ..string.join(lst); 
 		}
-		h = ..string.join(h ); 
+		else {
+			h = ..string.join(h,'\r\n') + '\r\n'; 
+		} 
 	}
 	elseif( #h ) {
 		if( ..string.startWith(h,'\r\n') ){
@@ -44,5 +46,5 @@ joinHeaders = function(h,...){
 }
 
 /**intellisense(web)
-joinHeaders(.(http头,->->->) = 拼接http头,支持任意个参数\nhttp头可以是字符串,数组,或键值对\n键值对的值可以是多个值组成的数组\n如果参数是键值对,自动对值中的宽字符进行UrlEncode编码(UTF8)
+joinHeaders(.(HTTP头,->->->) = 拼接 HTTP 头,支持任意个参数,\nHTTP 头可以是字符串、表（数组、键值对）。\n\n字符串参数总是移除最前面的回车换行，并在尾部添加回车换行。\n单个字符串参数如果包含多个 HTTP 头应当以回车换行分隔。\n如果表参数是键值对,则值包含的宽字符进行 UrlEncode 编码（UTF8）。\n键值对的值也可以是多个值组成的数组。\n如果表参数是数组，则使用回车换行作为分隔符拼接为字符串。\n\n返回拼接后的字符串，HTTP 头之间以回车换行分隔，尾部总是添加回车换行
 end intellisense**/

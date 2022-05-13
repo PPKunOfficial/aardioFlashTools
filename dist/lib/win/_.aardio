@@ -282,8 +282,8 @@ findEx = function(parent,after,cls,title){
 	return ::User32.FindWindowExW(parent,after,cls,title)
 }
 
-setTopmost = function(hwnd,top=true){
-	 ::SetWindowPos(hwnd,(top)?-1/*_HWND_TOPMOST*/:-2/*_HWND_NOTOPMOST*/,0,0,0,0,0x2/*_SWP_NOMOVE*/|0x1/*_SWP_NOSIZE*/|0x10/*_SWP_NOACTIVATE*/) 
+setTopmost = function(hwnd,top=true){ 
+	::SetWindowPos(hwnd,top?-1/*_HWND_TOPMOST*/:-2/*_HWND_NOTOPMOST*/,0,0,0,0,top?0x53 /*_SWP_NOMOVE | _SWP_NOSIZE| _SWP_NOACTIVATE | _SWP_SHOWWINDOW*/ : 0x13);
 } 
 
 getForeground = u.api( "GetForegroundWindow", "addr()" );
@@ -376,7 +376,7 @@ setActive(__/*输入窗口句柄*/)=设置激活窗口
 getFocus()=获取输入焦点所在窗口句柄
 setFocus(__/*输入窗口句柄*/)=设置输入焦点
 getDesktop()=获取桌面句柄
-setTopmost(__/*输入窗口句柄*/)=置顶窗口\n设置此属性前窗口必须已显示在屏幕上
+setTopmost(__/*输入窗口句柄*/)=置顶并显示窗口
 setTopmost(__/*输入窗口句柄*/,false)=取消置顶窗口
 find(.(类名,标题)=查找顶层窗口,参数都是可选参数
 findEx(.(父窗口句柄,上一个窗口句柄,类名,标题)=查找子窗口\n除父窗口句柄以外,其他参数都是可选参数,\n类名和标题不支持模式匹配,\n如果需要支持模式匹配,请改用 winex.findEx 或 winex.findEx2
@@ -429,7 +429,7 @@ center = function(hwnd,hTarget){
   		rcWork = ::RECT();
 		::SystemParametersInfo(0x30/*_SPI_GETWORKAREA*/,0,rcWork,0); 
 	 
-		rcTarget = ( hTarget && isVisible(hTarget) && !isIconic(hTarget) ) 
+		rcTarget = ( hTarget && !isIconic(hTarget) ) 
 			 ? getRect(hTarget,true) : rcWork; 
 	}
 	else { 
@@ -1017,7 +1017,7 @@ parseMessage = @.parseMessage = ??._parseMessage
 getDropFile(wParam) = 用于消息回调函数中获取拖放文件列表\n\n以管理权限启动的进程操作系统会禁止拖放操作，\n标准库提供了 process.admin.enableDropMsg 函数可以设置这个权限，\n但现在这个设置有可能也是不被允许的
 sendCopyData(.(窗口句柄,发送数据,数据类型) = 使用 _WM_COPYDATA 消息发送字符串到其他进程窗口。\n发送数据可以是字符串或 table 对象,\n数据类型可选指定一个数值
 getCopyData(lParam) = 获取 _WM_COPYDATA 消息发送的数据\nlParam 为窗口消息回调 wndproc 函数的回调参数\n\n此函数有2个返回值,分别为接收到的字符串值、表示数据类型的数值
-getIdleTime() = 获取用户未进行任何操作的空闲时间
+getIdleTime() = 获取用户未进行任何操作的空闲时间\n单位毫秒，1000 毫秒为 1秒
 setTimeout(回调函数,延时,其他调用参数) = @.setTimeout(\n	function(){\n		__/*在已经导入win.ui的界面线程内异步延时执行这里的代码\n除回调函数以外,其他参数都是可选参数\n延时默认为0*/\n	}\n)
 clearTimeout(.(定时器ID) =  删除定时器\n参数如果为null则忽略不执行\n否则定时器ID必须是setTimeout函数的返回值
 end intellisense**/

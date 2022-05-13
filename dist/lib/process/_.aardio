@@ -62,8 +62,8 @@ class process {
 	    	elseif( !#parameters ) {
 	    		error("路径参数错误",2);
 	    	} 
-	    	
-	    	if(!sa.workDir) sa.workDir = ..io.fullpath("/") ;
+
+	    	if(!sa.workDir) sa.workDir = self.workDir; 
 			var pf = PROCESS_INFORMATION();
 			var ret;
 
@@ -119,7 +119,7 @@ class process {
 					, parameters
 					, sa.creationFlag
 					, environment
-					, sa.workDir
+					, ..io.fullpath(sa.workDir)
 					, sa
 					, pf
 				)	  
@@ -854,7 +854,12 @@ namespace process{
 		if(tfile=="string"){
 			file = ..io.localpath(file) : file;  
 			if( (! #workDir ) ){
-	    		workDir = ..io.splitpath(file).dir ;
+				if(..io.exist(file)){
+					workDir = ..io.splitpath(file).dir ;	
+				}
+	    		else {
+	    			workDir = self.workDir;
+	    		}
 	    	}
 	    	
 	    	shInfo.lpFile = file;
@@ -1128,6 +1133,7 @@ namespace process{
 		
 		if( #b ) o = o ++ b;
 		if( !q ) return e ? o  : s;
+		if( #b ) o = o ++ b;
 		
 		return '"' + o + '"';	
 	} 
@@ -1173,6 +1179,8 @@ namespace process{
 			return..string.fromUnicode(s);
 		}
 	}
+	
+	workDir = ..io.fullpath("/")
 }
 
 /**intellisense()
@@ -1268,8 +1276,8 @@ process.is(__) = 传入参数是否 process 对象
 ?process.each = !processEntry.
 end intellisense**/
 
-
 /**intellisense(process)
+workDir = 创建进程默认工作目录，\n默认值为"/"，也即应用程序根目录。\n\n启动程序路径可直接访问时默认工作目录为应用程序所在目录，\n反之启动程序路径传入 io.exist 返回 false 则默认工作目录为 process.workDir，\n一般不建议改变默认工作目录，\n更好的选择是在创建进程的选项参数中指定 workDir
 getInfo(__) = 获取进程信息\n参数指定进程句柄
 getInfo() = !stdProcessInfo.
 shellAs( = 以管理权限运行exe应用程序,返回进程对象
@@ -1331,7 +1339,7 @@ environment = 新进程的环境变量\n以键值对组成的字符串,多个键
 inheritEnvironment = 如果此属性的值恒等于false,且同时指定了environment的值,\n那么创建的子进程不会继承父进程的环境变量\n此属性不指定值时默认值为true
 processAttributes = SECURITY_ATTRIBUTES结构体指针,一般不建议设置\n如需设置请使用raw.malloc将结构体转换为指针
 threadAttributess = SECURITY_ATTRIBUTES结构体指针,一般不建议设置\n如需设置请使用raw.malloc将结构体转换为指针
-workDir = 进程工作目录,一般不建议设置
+workDir = 进程工作目录,\n默认值为 process.workDir
 suspended = 是否休眠创建进程的主线程\n如果为真自动添加_CREATE_SUSPENDED参数
 username = 登录用户名
 password = 登录密码

@@ -173,7 +173,7 @@ askYesNo  = function(title){
 }
 
 pause = function(close,msg,erase){ 
-	open();
+	openForWrite();
 	
 	var x,y = getPos();
 	if(x) writeText( '\n' );
@@ -248,7 +248,7 @@ setCtrlHandlerThread = function(handle,add){
 } );
 
 var init;
-var openConsole = function(utf8){
+open = function(utf8){
 	if( utf8!== null ) self.utf8 = true;
 	if(self.utf8!==null) ..io.utf8 = self.utf8;
 	
@@ -298,13 +298,14 @@ crtReopen = function(){
 	..publish("afterConsoleOpen");
 }
 
-open = function(utf8){
+openForWrite = function(utf8){
     if( utf8!== null ) self.utf8 = utf8;
 	if(self.utf8!==null) ..io.utf8 = self.utf8;
 	
 	showLoading(false);
-	openConsole(utf8);
+	var hwnd = open(utf8);
 	..console.setCursorVisible(true); 
+	return hwnd;
 }
 
 import thread.event;
@@ -323,7 +324,7 @@ setLoadingDots = function(dots,endDots,interval){
 }
 
 showLoading = function(msg,dotColor){
-	openConsole();
+	open();
 	
 	if(!msg) {
 		eventLoading.set()
@@ -337,7 +338,7 @@ showLoading = function(msg,dotColor){
 		return;
 	}
 	
-	openConsole();
+	open();
 	eventLoading.reset();
 	eventLoadingRunning.reset();
 	thread.invoke( 
@@ -392,7 +393,7 @@ fullscreen = function(){
 }
 
 getText = function(s,len){
-	open();
+	openForWrite();
 	if( s ) writeText( s );
 	return  ..io.getText(len) ;	
 }
@@ -420,7 +421,7 @@ writeText = function(s,...){
 }
 
 print = function(...){ 
-	open();
+	openForWrite();
 	var args = {...};
 	var output = {};
 	for(i,v in ..table.eachArgs(args) ){ 
@@ -453,7 +454,7 @@ writeBack = function( s,... ){
 }
 
 debug = function(x,...){
-	if( _STUDIO_INVOKED ) open();
+	if( _STUDIO_INVOKED ) openForWrite();
 	stderr.write( tostring(x) ,'\t');
 	if(...===null){ stderr.write('\n');return } 
 	return debug(...);
@@ -536,14 +537,14 @@ getSize = function(){
 }
 
 getPos = function(){
-	openConsole();
+	open();
 	var csbi = CONSOLE_SCREEN_BUFFER_INFO();
 	if( ::Kernel32.GetConsoleScreenBufferInfo(getOutputHandle(),csbi) )
 		return csbi.cursorPosition.x,csbi.cursorPosition.y;
 }
 
 setPos = function(x,y){
-	openConsole();
+	open();
 	var x2,y2 = getPos();
 	if( x === null ) x = x2;
 	if( y === null ) y = y2;
@@ -574,7 +575,7 @@ writeColorText = function(txt,fore,back){
 }
 
 box = function(x,y,x2,y2,clr,title){
-	open(); 
+	openForWrite(); 
 	var csbi = CONSOLE_SCREEN_BUFFER_INFO();
 	::Kernel32.GetConsoleScreenBufferInfo(getOutputHandle(),csbi);
 	if(!x) {
@@ -629,7 +630,7 @@ readOutputCharacter = function(){
 }
 
 dump = function(v,...){
-	open();
+	openForWrite();
 	if( type(v) == type.table ) {
 		if(..com ){
 			if(v[["_dotNetObject"]]){
@@ -653,7 +654,7 @@ dump = function(v,...){
 } 
 
 dumpTable = function(t){
-	open();
+	openForWrite();
 	if(type.isString(t)){
 		var s = t; t = {};
 		if(..string.isUnicode(s)){
@@ -711,7 +712,7 @@ stderr = ..io.stderr;
 stdin = ..io.stdin; 
 	
 varDump = function(...){
-	open();
+	openForWrite();
 	var args = {...};
 	var b,e = ..table.range(args);
 	for(i=b;e){

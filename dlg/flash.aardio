@@ -1,5 +1,6 @@
 import win.ui;
 import win.ui.menu;
+import flashk
 /*DSG{{*/
 var winform = win.form(text="Flash";right=599;bottom=399)
 winform.add(
@@ -33,7 +34,7 @@ if(cos=="fb" or cos=="sideload"){
 }
 /*}}*/
 /*扫描设备代码{{*/
-import flashk
+
 
 winform.button.oncommand = function(id,event){
 	var formatResult=flashk.findDevice(cos)
@@ -51,14 +52,7 @@ winform.button.oncommand = function(id,event){
 }
 /*}}*/
 winform.button3.oncommand = function(id,event){
-	import fsys.dlg;
-	var filedir =""
-	if(cos=="rec" or cos=="fb"){
-		filedir = fsys.dlg.open("镜像文件 *.img|*.img|");
-	}else {
-		filedir = fsys.dlg.open("压缩文件 *.zip|*.zip|");
-	}
-	cfile=filedir
+	cfile=flashk.choseDir(cos)
 	winform.edit.text=fsys.getFileName(cfile);
 }
 winform.button2.oncommand = function(id,event){

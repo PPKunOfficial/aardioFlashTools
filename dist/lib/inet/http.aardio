@@ -475,10 +475,10 @@ class http{
 	    if(!ok) return null,err,code;
 	    
 	    this.headers = ..web.joinHeaders(headers,this.headers);
-	    if( (method == "POST") && postdata && !( this.headers  &&  ..string.find( this.headers,"@Content-Type:") ) ){  
+	    if( (method == "POST") && postdata && !( this.headers  &&  ..string.find( this.headers,"@@Content-Type:") ) ){  
 			this.headers = ..web.joinHeaders( this.headers
 		    	, ( postdata[1]=='{'# or  postdata[1]=='['#) 
-		    	? '\r\nContent-Type: application/json; charset=utf-8' : '\r\nContent-Type: application/x-www-form-urlencoded; charset=utf-8'
+		    	? 'Content-Type: application/json; charset=utf-8' : 'Content-Type: application/x-www-form-urlencoded; charset=utf-8'
 		    	);
 		} 
 		
@@ -707,11 +707,20 @@ namespace http{
 	}
 }
 
+/**details(说明)
+inet.http 与 inet.whttp 用法与接口基本相同，一般可相互替代。
+普通桌面客户端软件(非NT服务)请使用 inet.http（WinINet） 而不应该使用 inet.whttp（WinHTTP）。
+基于 inet.http 而封装的 web.rest.client 可能在很多应用中都是更好的选择。
+
+WinINet 错误代码说明
+http://support.microsoft.com/kb/193625
+end details**/
+
 /**intellisense()
 inet.http = WinINet支持库\n支持进程内多对象共享会话cookie,支持持久化cookie\n与web.form浏览器控件,IE浏览器共享cookie与代理设置 
 inet.http( = 创建HTTP会话对象,所有参数可选，\n注意提前导入zlib库，readAll 函数才能支持 gzip 自动解压。
 inet.http(.("UserAgent","代理服务器","绕过代理的主机",连接选项) = 所有参数可选,例：\ninet.http("Mozilla/4.0", "HTTP=HTTP://proxyserver:port","localhost,127.0.0.*")\n代理参数语法请参考inet.setProxy函数说明
-inet.http(.("UserAgent",false) =  禁用代理，UserAgent为可选参数
+inet.http(.("UserAgent",false) =  禁用代理，UserAgent 为可选参数
 inet.http.isAlive(.("UserAgent","代理服务器","绕过代理的主机",连接选项) = 当前是否能正常访问互联网,所有参数可选
 inet.http.get(.(url,headers,referer) = 用于界面线程创建线程并获取 @url 指定网址的数据,\n此函数等待下载完成但不会阻塞界面消息循环,\n可选用 @headers 指定 HTTP 头,\n可选用 @referer 指定引用网址,\n所有参数用法与 格式请参考 inet.http 对象的 get 函数相同
 inet.http() = !inet_http.
@@ -723,8 +732,8 @@ inet.http() = !inet_http.
 !inet_http.flags = @.flags = _INTERNET_FLAG___/*\n指定打开网址请求的默认选项\n禁用自动cookie管理请指定_INTERNET_FLAG_NO_COOKIE\n\n此选项一般用户不需要了解，\n请参考beginRequest函数的源码以及相关API文档\n*/ 
 !inet_http.accept = 指定可选择的文件类型,多个类型使用逗号分隔\n默认无需指定,也可以在参数中指定
 !inet_http.referer = 引用页地址,此属性会自动设置为上次打开的网址\n建议在参数中指定
-!inet_http.addHeaders = 设置所有请求默认添加的HTTP头\n请求结束时不会清空此属性\n该值可以是一个字符串,也可以是键值对组成的table对象
-!inet_http.headers = 设置本次请求的HTTP头\n此属性会在每次发送请求以后,接收数据以前,初始化为空值\n该值可以是一个字符串,也可以是键值对组成的table对象
+!inet_http.addHeaders = 设置所有请求默认添加的HTTP头\n请求结束时不会清空此属性\n该值可以是 web.joinHeaders 函数支持的字符串、表（数组、键值对）
+!inet_http.headers = 设置本次请求的HTTP头\n此属性会在每次发送请求以后,接收数据以前,初始化为空值\n该值可以是 web.joinHeaders 函数支持的字符串、表（数组、键值对）
 !inet_http.queryNumber(_HTTP_QUERY_FLAG__/*指定要返回的头信息*/) = 取HTTP头数值
 !inet_http.responseContentType = 每次发送请求后重置该值为服务器应答Content-Type头\n使用该值获取服务器返回的文档类型
 !inet_http.responseContentEncoding = 应答HTTP头的Content-Encoding值\n如果该值为"gzip",通过readAll函数一次读取下载数据时会自动解压,\n解压后该值将设为null值
@@ -733,9 +742,9 @@ inet.http() = !inet_http.
 !inet_http.readHeader(.() = 获取返回的HTTP头,必须在send发送请求以后才能调用此函数,\n如果调用head函数发送请求,则请求结束该函数仍然可用\n如果是调用get,post,down等函数,可以在afterSend事件中调用此函数\n返回的HTTP头以回车换行作为分隔符\n如果无参数调用了此函数，则直到下次请求以前，HTTP响应头会保存在responseHeaders属性中，\n即使在请求结束以后，所有读取HTTP头的函数都可以继续使用
 !inet_http.readHeader(.("Content-Length:") = 获取指定的HTTP头,参数指定HTTP头名字或部分名字,忽略冒号以后部分,\n该函数在调用send函数以后或afterSend事件中可用\n必须在send发送请求以后才能调用此函数\n调用head函数发送请求成功以后,则请求结束后该函数仍然可用\n如果是调用get,post,down等函数,可以在afterSend事件中调用此函数
 !inet_http.readHeaderList("set-cookie__") = 获取指定HTTP头开始段的HTTP头,不忽略冒号以后部分,参数可省略,\n返回键值对组成的表对象,键名小写,每个值都是一个数组\n必须在send发送请求以后才能调用此函数\n如果调用head函数发送请求,则请求结束该函数仍然可用\n如果是调用get,post,down等函数,可以在afterSend事件中调用此函数
-!inet_http.writeHeader("Name:value__") = 写入请求HTTP头,必须在send发送请求以前调用\n如果存在则覆盖,否则添加\n成功返回true
-!inet_http.replaceHeader("Name:value__") = 写入请求HTTP头,必须在send发送请求以前调用\n如果存在则覆盖,否则忽略
-!inet_http.mergeHeader("Name:value__") = 写入请求HTTP头,必须在send发送请求以前调用\n如果存在同名HTTP头则合并\n可使用第二个参数指定分隔符为逗号或分号\n默认为逗号
+!inet_http.writeHeader("Name:value__") = 写入请求 HTTP 头,\n参数可以是 web.joinHeaders 函数支持的字符串、表（数组、键值）。\n如果存在相同的 HTTP 头则覆盖，否则添加 HTTP 头。\n函数执行成功返回 true\n\n必须在 send 发送请求以前调用, \n可在 beforeSend 事件内调用
+!inet_http.replaceHeader("Name:value__") = 写入请求 HTTP 头,\n参数可以是 web.joinHeaders 函数支持的字符串、表（数组、键值）。\n如果存在相同的 HTTP 头则覆盖，否则忽略。\n函数执行成功返回 true\n\n必须在 send 发送请求以前调用, \n可在 beforeSend 事件内调用
+!inet_http.mergeHeader("Name:value__") = 写入请求 HTTP 头,\n参数可以是 web.joinHeaders 函数支持的字符串、表（数组、键值）。\n如果存在同名 HTTP 头则合并，\n可使用第二个参数指定分隔符为逗号或分号，默认为逗号。\n函数执行成功返回 true\n\n必须在 send 发送请求以前调用, \n可在 beforeSend 事件内调用
 !inet_http.beginRequest(.(url,method,referer,accept,flags,connectFlags) = 打开连接并准备发送请求\n除URL以外,所有参数可选\nmethod参数指定HTTP请求方法，\nreferer参数指定引用页,默认使用上一次访问的网址作为下一次的引用网址\naccept指定客户端接受的MIME内容类型,参考HTTP请求头该字段说明\nflags参数为_INTERNET_FLAG_开头的常量用于指定请求选项, \nconnectFlags用于指定调打开连接选项, \nflags,connectFlags一般用不到，详细的用法请参考此函数源码以及相关API文档
 !inet_http.endRequest() = 关闭请求,与beginRequest配对使用.
 !inet_http.bufferTotal = 上传数据总长度\n即beginSendData()参数传入的数值
@@ -863,8 +872,3 @@ _HTTP_ADDREQ_FLAG_REPLACE=@0x80000000/*_HTTP_ADDREQ_FLAG_REPLACE*/
 _HTTP_ADDREQ_INDEX_MASK=@0xFFFF/*_HTTP_ADDREQ_INDEX_MASK*/
 _HTTP_ADDREQ_FLAGS_MASK=@0xFFFF0000/*_HTTP_ADDREQ_FLAGS_MASK*/ 
 end intellisense**/
-
-/*
-http错误代码说明
-http://support.microsoft.com/kb/193625
-*/
