@@ -1,0 +1,89 @@
+﻿namespace flash{
+	cfile=""
+	/*链接核心代码{{*/
+	fastbootConnet=function(){
+		import process.popen
+		import fsys
+		var commandV=/****
+		cd tools
+		fastboot.exe devices
+		****/
+		var prcs = process.popen.cmd(commandV)
+		var result=prcs.readAll()
+		return result
+	}	
+	formatDeviceMsg=function(result){
+		var res=tostring(result)
+		var formatResult=""
+		if(cos=="fb" and fb=="rec"){
+			formatResult=string.split(res,"<fastboot>")
+		}else {
+			formatResult=string.split(res,"<sideload>")
+		}
+		return formatResult
+	}
+	adbFormatMsg2Fb=function(result){
+		var res=tostring(result)
+		if(res=="List of devices attached"){
+			return ""; 
+		}
+		var formatLine=string.split(res,'\n')
+		var removeFirstLine=""
+		for(i=2;table.count(formatLine);1){
+			if(table.count(formatLine)==2){
+				removeFirstLine+=formatLine[2]
+				break
+			}
+			removeFirstLine+=formatLine[i]+'\n'	
+		}
+		return removeFirstLine
+	}	
+	adbConnet=function(){
+		import process.popen
+		import fsys
+		var commandV=/****
+		cd tools
+		adb.exe devices
+		****/
+		var prcs = process.popen.cmd(commandV)
+		var result=prcs.readAll()
+		return adbFormatMsg2Fb(result)
+	}	
+	startADB=function(){
+		import process.popen
+		import fsys
+		var commandV=/****
+		cd tools
+		adb.exe devices
+		****/
+		var prcs = process.popen.cmd(commandV)
+	}
+	/*}}*/
+	/*扫描设备代码{{*/
+	// cos=tostring(clickButton)
+	findDevice = function(cos){
+		var findRt=""
+		if(cos=="fb" or cos=="rec"){
+			findRt=fastbootConnet()
+		}else{
+			startADB()
+			findRt=adbConnet()
+		}
+		winform.combobox.clear()
+		var formatResult=formatDeviceMsg(findRt)
+		if(!table.count(formatResult)){
+			return "404"
+		}else{
+			var findListRes={}
+			if(table.count(formatResult)==1){
+				findListRes[1]=formatResult[1]
+			}else {
+				for(i=1;table.count(formatResult)-1;1){
+					findListRes[i]=formatResult[i]
+				}		
+			}
+		}
+		return findListRes; 
+	}
+	/*}}*/
+}
