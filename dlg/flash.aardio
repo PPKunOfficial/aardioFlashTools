@@ -33,6 +33,13 @@ if(cos=="fb" or cos=="sideload"){
 	winform.edit.bottom=159
 }
 /*}}*/
+
+flashk.startADB()
+findRES=flashk.findDevice()
+if(findRES=="404"){
+	winform.richedit.text="暂时未扫描到设备链接"
+}
+
 winform.button3.oncommand = function(id,event){
 	cfile=flashk.choseDir(cos)
 	winform.edit.text=fsys.getFileName(cfile);

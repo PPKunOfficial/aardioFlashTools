@@ -1,6 +1,14 @@
 ﻿namespace flashk{
-	/*链接核心代码{{*/
-	fastbootConnet=function(){
+	startADB=function(){ // 开启adb进程
+		import process.popen
+		import fsys
+		var commandV=/****
+		cd tools
+		adb.exe devices
+		****/
+		var prcs = process.popen.cmd(commandV)
+	}
+	fastbootConnet=function(){ // fastboot链接信息
 		import process.popen
 		import fsys
 		var commandV=/****
@@ -11,17 +19,7 @@
 		var result=prcs.readAll()
 		return result
 	}	
-	formatDeviceMsg=function(cos,result){
-		var res=tostring(result)
-		var formatResult=""
-		if(cos=="fb" and fb=="rec"){
-			formatResult=string.split(res,"<fastboot>")
-		}else {
-			formatResult=string.split(res,"<sideload>")
-		}
-		return formatResult
-	}
-	adbFormatMsg2Fb=function(result){
+	adbFormatMsg2Fb=function(result){ // 格式化adb输出为fastboot格式
 		var res=tostring(result)
 		if(res=="List of devices attached"){
 			return ""; 
@@ -37,7 +35,7 @@
 		}
 		return removeFirstLine
 	}	
-	adbConnet=function(){
+	adbConnet=function(){ // adb链接信息
 		import process.popen
 		import fsys
 		var commandV=/****
@@ -48,19 +46,19 @@
 		var result=prcs.readAll()
 		return adbFormatMsg2Fb(result)
 	}	
-	startADB=function(){
-		import process.popen
-		import fsys
-		var commandV=/****
-		cd tools
-		adb.exe devices
-		****/
-		var prcs = process.popen.cmd(commandV)
+	formatDeviceMsg=function(cos,result){ // 格式化设备信息
+		var res=tostring(result)
+		var formatResult=""
+		if(cos=="fb" and fb=="rec"){
+			formatResult=string.split(res,"<fastboot>")
+		}else {
+			formatResult=string.split(res,"<sideload>")
+		}
+		return formatResult
 	}
-	/*}}*/
-	/*扫描设备代码{{*/
+
 	// cos=tostring(clickButton)
-	findDevice = function(cos){
+	findDevice = function(cos){ //寻找设备（判断为adb还是fb
 		var findRt=""
 		if(cos=="fb" or cos=="rec"){
 			findRt=fastbootConnet()
@@ -68,7 +66,7 @@
 			startADB()
 			findRt=adbConnet()
 		}
-		var formatResult=formatDeviceMsg(findRt)
+		var formatResult=formatDeviceMsg(cos,findRt)
 		if(!table.count(formatResult)){
 			return "404"
 		}else{
@@ -83,8 +81,7 @@
 		}
 		return findListRes; 
 	}
-	/*}}*/
-	choseDir=function(cos){
+	choseDir=function(cos){ // 选择镜像地址
 		import fsys.dlg;
 		var filedir =""
 		if(cos=="rec" or cos=="fb"){
@@ -94,7 +91,7 @@
 		}
 		return filedir; 
 	}
-	createFlashCode=function(cos){
+	createFlashCode=function(cos){ // 生成刷机指令
 		var flashTool = ""; 
 		if(cos=="fb"){
 			flashTool="
