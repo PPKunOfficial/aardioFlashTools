@@ -33,24 +33,6 @@ if(cos=="fb" or cos=="sideload"){
 	winform.edit.bottom=159
 }
 /*}}*/
-/*扫描设备代码{{*/
-
-
-winform.button.oncommand = function(id,event){
-	var formatResult=flashk.findDevice(cos)
-	if(formatResult=="404"){
-		winform.richedit.text='无设备链接...\n';
-	}else{
-		winform.richedit.text='当前发现设备:\n';
-		for(i=1;table.count(formatResult);1){
-			winform.combobox.add(tostring(formatResult[i]));
-			winform.combobox.selText=tostring(formatResult[i]);
-			winform.richedit.text+=formatResult[i];
-		}		
-	}
-	winform.richedit.text+='\n';
-}
-/*}}*/
 winform.button3.oncommand = function(id,event){
 	cfile=flashk.choseDir(cos)
 	winform.edit.text=fsys.getFileName(cfile);
@@ -61,20 +43,7 @@ winform.button2.oncommand = function(id,event){
 	var device=winform.combobox.selText
 	var flashTool=""
 	if(cfile!=""){
-		if(cos=="fb"){
-			flashTool="
-		cd tools
-		fastboot.exe flash "+rfile+" "+cfile+" "+device
-		}elseif(cos=="rec"){
-			flashTool="
-		cd tools
-		fastboot.exe flash recovery "+cfile+" "+device+"
-		fastboot.exe boot "+cfile+" "+device
-		}else {
-			flashTool="
-		cd tools
-		adb.exe sideload "+cfile
-		}
+		flashTool=flashk.flashTool(cos)
 		winform.richedit.text="已执行，请等待"
 		import process.popen
 		import fsys
@@ -94,7 +63,6 @@ winform.combobox.oncommand = function(id,event){
 		winform.richedit.text += '已选中:\n'+winform.combobox.selText+'\n';
 	}
 }
-winform.button.oncommand();
 winform.show();
 win.loopMessage();
 return winform;

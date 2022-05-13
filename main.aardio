@@ -1,13 +1,3 @@
-/*原子窗体{{*/
-import process.mutex;
-var mutex = process.mutex("0F45833B-0117-400E-A859-6634A062868D") 
-if( mutex.conflict ){
-    import win.ui.atom;
-    var atom,hwndConflict = win.ui.atom.find("D443D5F9-EC78-4276-9FEE-677B564DB9D22")
-    if( hwndConflict ) win.setForeground(hwndConflict);
-    return;
-} 
-/*}}*/
 import win.ui;
 import win.ui.atom 
 /*UPDATE更新检测代码{{*/
@@ -42,7 +32,6 @@ if(_ARGV.opt){
 	//mainForm.edit.print(_ARGV.opt,_ARGV[#_ARGV]);
 }
 /*}}*/
-mainForm.atom("D443D5F9-EC78-4276-9FEE-677B564DB9D22"); 
 clickButton="";
 mainForm.button.oncommand = function(id,event){
 	clickButton="rec";

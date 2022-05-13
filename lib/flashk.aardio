@@ -94,4 +94,23 @@
 		}
 		return filedir; 
 	}
+	createFlashCode=function(cos){
+		var flashTool = ""; 
+		if(cos=="fb"){
+			flashTool="
+		cd tools
+		fastboot.exe flash "+rfile+" "+cfile+" "+device
+		}elseif(cos=="rec"){
+			flashTool="
+		cd tools
+		fastboot.exe flash recovery "+cfile+" "+device+"
+		fastboot.exe boot "+cfile+" "+device
+		}else {
+			flashTool="
+		cd tools
+		adb.exe sideload "+cfile
+		}
+		return flashTool; 
+	}
+	
 }
