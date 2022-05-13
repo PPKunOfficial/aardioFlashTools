@@ -14,6 +14,7 @@ static={cls="static";text="刷入状态：";left=200;top=25;right=340;bottom=48;
 static2={cls="static";text="刷入模式：";left=8;top=25;right=184;bottom=48;font=LOGFONT(h=-16;name='MiSans';weight=700);transparent=1;z=7}
 )
 /*}}*/
+
 cfile=""
 /*链接核心代码{{*/
 fastbootConnet=function(){
@@ -154,14 +155,16 @@ winform.button2.oncommand = function(id,event){
 		import process.popen
 		import fsys
 		var commandV=flashTool
-		var prcs = process.popen.cmd(commandV)
-		var result=prcs.readAll()
+		var prcs = process.popen.detached("cmd.exe")
+		prcs.write(cmd)
+		var result = prcs.peekTo();
+		prcs.print('exit')
 		winform.richedit.text=result
 	}else {
 			winform.richedit.text="未选择文件"
 	}
-	
 }
+
 winform.combobox.oncommand = function(id,event){
 	if(event == 0x1/*_CBN_SELCHANGE*/){
 		winform.richedit.text += '已选中:\n'+winform.combobox.selText+'\n';

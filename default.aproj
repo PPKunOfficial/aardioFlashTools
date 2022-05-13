@@ -6,5 +6,6 @@
 	</folder>
 	<folder name="窗体文件" path="dlg" comment="目录" embed="true" local="false" ignored="false">
 		<file name="flash.aardio" path="dlg\flash.aardio" comment="dlg\flash.aardio"/>
+		<file name="test.aardio" path="dlg\test.aardio" comment="dlg\test.aardio"/>
 	</folder>
 </project>
