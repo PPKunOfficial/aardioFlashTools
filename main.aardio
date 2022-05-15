@@ -1,11 +1,8 @@
 import win.ui;
  
 // 字体
-import win.font
-win.font.add("\res\MiSansBold.ttf")
-win.font.add("\res\MiSansHeavy.ttf")
-win.font.add("\res\MiSansMedium.ttf")
-win.font.add("\res\MiSansNormal.ttf")
+import fonts.miSans
+
 
 /*DSG{{*/
 mainForm = win.form(text="FlashTools";right=399;bottom=599)

@@ -1,29 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project ver="10" name="aardioFlashTools" libEmbed="false" icon="res\logo.ico" ui="win" output="FlashTools.exe" CompanyName="PP" FileDescription="FlashTools" LegalCopyright="Copyright (C) PPKun07 2022" ProductName="FlashTools" InternalName="FlashTools" FileVersion="2.0.0.54" ProductVersion="2.0.0.54" publishDir="/dist/" dstrip="false" local="false" ignored="false">
+<project ver="10" name="aardioFlashTools" libEmbed="false" icon="res\logo.ico" ui="win" output="FlashTools.exe" CompanyName="PP" FileDescription="FlashTools" LegalCopyright="Copyright (C) PPKun07 2022" ProductName="FlashTools" InternalName="FlashTools" FileVersion="2.0.0.57" ProductVersion="2.0.0.57" publishDir="/dist/" dstrip="false" local="false" ignored="false">
 	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
 	<folder name="资源文件" path="res" embed="true" local="false" ignored="false">
 		<file name="logo.jpeg" path="res\logo.jpeg" comment="res\logo.jpeg"/>
-		<file name="MiSansBold.ttf" path="res\MiSansBold.ttf" comment="res\MiSansBold.ttf"/>
-		<file name="MiSansHeavy.ttf" path="res\MiSansHeavy.ttf" comment="res\MiSansHeavy.ttf"/>
-		<file name="MiSansMedium.ttf" path="res\MiSansMedium.ttf" comment="res\MiSansMedium.ttf"/>
-		<file name="MiSansNormal.ttf" path="res\MiSansNormal.ttf" comment="res\MiSansNormal.ttf"/>
-		<folder name="adb" path="res\adb" comment="res\adb">
-			<file name="adb.exe" path="res\adb\adb.exe" comment="res\adb\adb.exe"/>
-			<file name="AdbWinApi.dll" path="res\adb\AdbWinApi.dll" comment="res\adb\AdbWinApi.dll"/>
-			<file name="AdbWinUsbApi.dll" path="res\adb\AdbWinUsbApi.dll" comment="res\adb\AdbWinUsbApi.dll"/>
-			<file name="dmtracedump.exe" path="res\adb\dmtracedump.exe" comment="res\adb\dmtracedump.exe"/>
-			<file name="etc1tool.exe" path="res\adb\etc1tool.exe" comment="res\adb\etc1tool.exe"/>
-			<file name="fastboot.exe" path="res\adb\fastboot.exe" comment="res\adb\fastboot.exe"/>
-			<file name="hprof-conv.exe" path="res\adb\hprof-conv.exe" comment="res\adb\hprof-conv.exe"/>
-			<file name="libwinpthread-1.dll" path="res\adb\libwinpthread-1.dll" comment="res\adb\libwinpthread-1.dll"/>
-			<file name="make_f2fs.exe" path="res\adb\make_f2fs.exe" comment="res\adb\make_f2fs.exe"/>
-			<file name="make_f2fs_casefold.exe" path="res\adb\make_f2fs_casefold.exe" comment="res\adb\make_f2fs_casefold.exe"/>
-			<file name="mke2fs.conf" path="res\adb\mke2fs.conf" comment="res\adb\mke2fs.conf"/>
-			<file name="mke2fs.exe" path="res\adb\mke2fs.exe" comment="res\adb\mke2fs.exe"/>
-			<file name="NOTICE.txt" path="res\adb\NOTICE.txt" comment="res\adb\NOTICE.txt"/>
-			<file name="source.properties" path="res\adb\source.properties" comment="res\adb\source.properties"/>
-			<file name="sqlite3.exe" path="res\adb\sqlite3.exe" comment="res\adb\sqlite3.exe"/>
-		</folder>
 	</folder>
 	<folder name="窗体文件" path="dlg" comment="目录" embed="true" local="false" ignored="false">
 		<file name="flash.aardio" path="dlg\flash.aardio" comment="dlg\flash.aardio"/>

@@ -3,11 +3,7 @@ import win.ui.menu;
 import flashk
 
 // 字体
-import win.font
-win.font.add("\res\MiSansBold.ttf")
-win.font.add("\res\MiSansHeavy.ttf")
-win.font.add("\res\MiSansMedium.ttf")
-win.font.add("\res\MiSansNormal.ttf")
+import fonts.miSans
 
 /*DSG{{*/
 var winform = win.form(text="Flash";right=599;bottom=399)
