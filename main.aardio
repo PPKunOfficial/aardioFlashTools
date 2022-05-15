@@ -1,5 +1,19 @@
 import win.ui;
-import win.ui.atom 
+import win.ui.atom
+ 
+// 字体
+import fonts.MiSansThin;
+import fonts.MiSansBold;
+import fonts.MiSansDemibold;
+import fonts.MiSansExtraLight;
+import fonts.MiSansHeavy;
+import fonts.MiSansLight;
+import fonts.MiSansMedium;
+import fonts.MiSansNormal;
+import fonts.MiSansRegular;
+import fonts.MiSansSemibold;
+
+
 /*UPDATE更新检测代码{{*/
 function checkUpdate(){
 	import update;
