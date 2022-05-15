@@ -494,6 +494,11 @@ namespace metaProperty {
 			getClientRect = function(){
 				return ..win.getClientRect(owner.hwnd)
 			}; 
+			dpiScale = function(x,y){
+				x = x * (owner.dpiScaleX : 1);
+				if(y) y = y * (owner.dpiScaleX : 1);
+				return x,y;
+			};
 			saveScale = function(scaleX,scaleY,dpiScaleX,dpiScaleY){
 				var form = owner._parentForm;
 				if(!form) return;
@@ -1005,8 +1010,8 @@ namespace metaProperty {
 						..win.setOwner(owner.hwnd,owner._parentForm.hwnd);
 						if( trans ) owner.modifyStyleEx(,0x80000/*_WS_EX_LAYERED*/); 
 						var swp =  0x1C/*_SWP_NOACTIVATE | _SWP_NOZORDER | _SWP_NOREDRAW*/;
-						if( visible) { swp = 0x40/*_SWP_SHOWWINDOW*/ | swp; }
-						..win.setPos(owner.hwnd,x,y, , ,,swp);
+
+						..win.setPos(owner.hwnd,x,y, , ,,swp | (visible?0x40/*_SWP_SHOWWINDOW*/:0x80/*_SWP_HIDEWINDOW*/));
 						if( visible){ owner.redraw(); }	
 					}
 			 	 

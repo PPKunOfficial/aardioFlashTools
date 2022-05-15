@@ -130,6 +130,7 @@ static._metaProperty = metaProperty( )
 !static.enableDpiScaling(false) = 禁用DPI自动缩放,\n不指定参数启用DPI自动缩放,默认已启用
 !static.dpiScaleX = 窗口当前使用的DPI横坐标缩放系数,\n该值由界面系统自动维护，任何情况下都不应手动修改,\n\n这是一个以小数表示百分比的数，例如 1.25 表示 125%,\n窗口未使用缩放或未完成缩放初始化时，值可能为 null，\n如果要获取屏幕缩放设置应改用 gdi.getDpiScale 函数
 !static.dpiScaleY = 窗口当前使用的DPI纵坐标缩放系数,\n该值由界面系统自动维护，任何情况下都不应手动修改,\n\n这是一个以小数表示百分比的数，例如 1.25 表示 125%,\n窗口未使用缩放或未完成缩放初始化时，值可能为 null，\n如果要获取屏幕缩放设置应改用 gdi.getDpiScale 函数
+!static.dpiScale(.(x,y) = 将 @x,@y 表示的像素值乘以窗体当前 DPI 缩放倍数并返回,\n省略 @y 参数时仅返回 @x 转换后的值,\n所有 win.ui 创建的窗口或控件都提供这个函数
 !static.getRoot() = 获取顶层父窗口，这个函数会查找 orphanWindow 的父窗口
 !static._defWindowProc(hwnd,message,wParam,lParam) = 用于在 wndproc 回调中提前调用默认消息回调函数,\n所有窗口和控件定义了 wndproc 回调以后会自动创建这个函数,\n调用此函数以后,wndproc 必须指定非 null 返回值,\n以避免再次重复调用默认回调函数
 ?win.ui.ctrl.static  =!static.
